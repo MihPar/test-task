@@ -1,5 +1,10 @@
 {
   "compilerOptions": {
+    "allowJs": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "esModuleInterop": true,
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
@@ -12,10 +17,24 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-    "strictNullChecks": false,
-    "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "strictPropertyInitialization": false,
+    "noFallthroughCasesInSwitch": false,
+    "moduleResolution": "node",
+    "paths": {
+      "src/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "exclude": [
+    "apps/src/auth/prisma/client",
+    "apps/blog/prisma/client",
+    "frontend",
+    "dist"
+  ],
+  "ts-node": {
+    // "transpileOnly": true // отключает проверку типов и ускоряет запуск файлов: ts-node src/example.ts
   }
 }
