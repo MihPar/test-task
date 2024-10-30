@@ -13,6 +13,13 @@ datasource db {
   url      = env("DATABASE_URL_TEST_TASK")
 }
 
+enum TypeCode {
+    passwordRecovery
+    register
+    login
+    telegramAuth
+}
+
 model User {
     id           String   @id @default(uuid()) @db.Uuid
     username     String   @unique @db.VarChar(30)
@@ -21,4 +28,17 @@ model User {
     passwordSalt String
     createdAt    DateTime @default(now()) @db.Timestamptz(6)
     isConfirm    Boolean
+	codeConfirmation CodeConfirmation[]
+}
+
+model CodeConfirmation {
+    id             String   @id @default(uuid()) @db.Uuid
+    userId         String   @db.Uuid
+    typeCode       TypeCode
+    code           String   @unique
+    expirationDate DateTime
+    isConfirmed    Boolean  @default(false)
+    user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, typeCode])
 }
