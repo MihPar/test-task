@@ -9,12 +9,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthModule = void 0;
 const common_1 = require("@nestjs/common");
 const auth_contorller_1 = require("../auth.contorller");
+const config_1 = require("@nestjs/config");
+const db_config_1 = require("/Users/mihailparamonov/Documents/programmer/it-incubator/test-task/apps/auth/db.config");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
-        imports: [],
+        imports: [
+            config_1.ConfigModule.forRoot({
+                isGlobal: true,
+                envFilePath: ".env",
+                load: [db_config_1.default]
+            }),
+        ],
         controllers: [auth_contorller_1.AuthController],
         providers: [],
     })

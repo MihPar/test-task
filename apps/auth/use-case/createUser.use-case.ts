@@ -1,9 +1,12 @@
+import { add } from 'date-fns/add';
 import { IUserViewModel } from '../dto/auth.dto';
 import { Injectable } from "@nestjs/common";
 import { ICommandHandler } from "@nestjs/cqrs";
 import { IUserInputModel } from "../dto/auth.dto";
 import { QueryRepository } from '../infrastructura/auth.repositoryQuery';
 import bcrypt from "bcrypt";
+import { v4 as uuidv4 } from 'uuid';
+import { EmailAdapter } from '../wrapper.ts/email-manager/email-manager';
 
 type UseCaseArg = IUserInputModel
 
@@ -19,7 +22,8 @@ type UseCaseResponse =
 @Injectable()
 export class CreateUser implements ICommandHandler {
     constructor(
-		protected queryRepository: QueryRepository
+		protected queryRepository: QueryRepository,
+		protected emailAdapter: EmailAdapter
     ) { }
 
     async execute(command: UseCaseArg): Promise<UseCaseResponse> {
@@ -29,14 +33,14 @@ export class CreateUser implements ICommandHandler {
         if (exist.username === 'exist') return { status: 'error', errorType: 'existed_login' }
 
         const passwordSalt = await bcrypt.genSalt(10)
-        const passwordHash = await this.authServiceForUseCase.GenerateHashPassword(password, passwordSalt)
+        const passwordHash = await bcrypt.hash(password, passwordSalt)
 
         const newCode = uuidv4()
         const expirationDate = add(new Date(), {
-            minutes: this.keys.keys.codeConfirmRegisterMinutes,
+            minutes: 20
         }).toISOString()
 
-        const res = await this.emailManager.sendEmail(email, newCode, 'Registration').catch(e => {
+        const res = await this.emailAdapter.sendEmailByRecoveryCode(email, newCode).catch(e => {
             console.log('Error EmailManager.SendEmail', e)
             return null
         })
