@@ -1,11 +1,5 @@
-import {
-	MiddlewareConsumer,
-	Module,
-	NestModule,
-	RequestMethod,
-  } from '@nestjs/common';
+import {Module} from '@nestjs/common';
   import { ConfigModule } from '@nestjs/config';
-  import { PrismaClient } from '@prisma/client';
   import { ClientsModule } from '@nestjs/microservices';
 import { authServiceConfig } from './auth/config/service.config';
 import { AuthModule } from './auth/auth.module';
